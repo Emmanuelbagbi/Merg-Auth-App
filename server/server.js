@@ -29,7 +29,6 @@
 
 
 
-
 import express from "express";
 import cors from "cors";
 import "dotenv/config";
@@ -41,10 +40,10 @@ import authRouter from "./routes/authRoutes.js";
 import userRouter from "./routes/userRouter.js";
 
 const app = express();
-const port = 4000;
+const port = process.env.PORT || 4000;
 
 // Ensure your frontend URL is correct
-const allowedOrigin = process.env.BACKEND_URL || "https://merg-auth-app.vercel.app/";
+const allowedOrigin = process.env.FRONTEND_URL || "https://merg-auth-app.vercel.app";
 
 // Connect to MongoDB
 mongodb();
@@ -53,19 +52,19 @@ mongodb();
 app.use(express.json());
 app.use(cookieParser());
 app.use(cors({
-  origin: allowedOrigin, 
-  credentials: true // allows cookies to be sent with requests
+  origin: allowedOrigin,
+  credentials: true
 }));
 
 // Session configuration
 app.use(session({
-  secret: process.env.SECRET_KEY, // secret key to encrypt the session
+  secret: process.env.SECRET_KEY,
   resave: false,
   saveUninitialized: true,
-  cookie: { secure: false }, // In production, set this to true with HTTPS
+  cookie: { secure: false }, // Use true if using HTTPS and proxy
 }));
 
-// Initialize Passport for user authentication
+// Passport middleware
 app.use(passport.initialize());
 app.use(passport.session());
 
@@ -74,7 +73,7 @@ app.get("/", (req, res) => res.send("Welcome to the backend!"));
 app.use("/auth", authRouter);
 app.use("/user", userRouter);
 
-// Start the server
-app.listen(port, () => {
-  console.log(`Server running on http://localhost:${port}`);
+// Start the server on 0.0.0.0 for Render compatibility
+app.listen(port, "0.0.0.0", () => {
+  console.log(`Server running on port ${port}`);
 });
