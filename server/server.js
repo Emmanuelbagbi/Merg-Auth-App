@@ -44,7 +44,7 @@ const app = express();
 const port = 4000;
 
 // Ensure your frontend URL is correct
-const allowedOrigin = process.env.BACKEND_URL || "http://localhost:5176";
+const allowedOrigin = process.env.BACKEND_URL || "https://merg-auth-app.vercel.app/";
 
 // Connect to MongoDB
 mongodb();
